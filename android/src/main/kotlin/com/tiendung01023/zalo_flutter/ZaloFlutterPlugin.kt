@@ -250,14 +250,14 @@ class ZaloFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     val data: Map<String, Any?> = AppHelper.jsonToMap(response)
                     val errorCode = data["error"] as Int
                     val isSuccess = errorCode == 0
+                    val map: MutableMap<String, Any?> = HashMap()
                     if (isSuccess) {
-                        val map: MutableMap<String, Any?> = HashMap()
                         map["isSuccess"] = true
                         val newData = data.filterKeys { key -> key != "error" && key != "message" && key != "extCode" }
                         map["data"] = newData
                         result.success(map)
                     } else {
-                        val map: MutableMap<String, Any?> = HashMap()
+                        // val map: MutableMap<String, Any?> = HashMap()
 
                         val error: MutableMap<String, Any?> = HashMap()
                         error["errorCode"] = errorCode
@@ -266,8 +266,8 @@ class ZaloFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
                         map["isSuccess"] = errorCode == 0
                         map["error"] = error
-                        result.success(map)
                     }
+                    result.success(map)
                 }
             } catch (e: Exception) {
                 val error: MutableMap<String, Any?> = HashMap()
