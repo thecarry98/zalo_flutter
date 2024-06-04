@@ -127,8 +127,11 @@ class ZaloFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 map["data"] = data
                 result.success(map)
             }
+
         }
-        zaloInstance.authenticateZaloWithAuthenType(activity, LoginVia.APP_OR_WEB, codeChallenge, extInfo, listener)
+        zaloInstance.checkInitialize();
+        zaloInstance.setOauthCompletedListener(listener)
+        zaloInstance.authenticateZaloWithAuthenType(activity, LoginVia.APP_OR_WEB, codeChallenge, listener)
     }
 
     @Throws(Exception::class)
@@ -234,6 +237,8 @@ class ZaloFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         result.success(true)
     }
 
+
+
     @Throws(Exception::class)
     private fun withZOGraphCallBack(result: Result): ZaloOpenAPICallback {
         return ZaloOpenAPICallback { response: JSONObject? ->
@@ -253,7 +258,7 @@ class ZaloFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     val map: MutableMap<String, Any?> = HashMap()
                     if (isSuccess) {
                         map["isSuccess"] = true
-                        val newData = data.filterKeys { key -> key != "error" && key != "message" && key != "extCode" }
+                        val newData = data.filterKeys { key -> key != "error" }
                         map["data"] = newData
                         result.success(map)
                     } else {
@@ -266,6 +271,8 @@ class ZaloFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
                         map["isSuccess"] = errorCode == 0
                         map["error"] = error
+                        result.success(map)
+
                     }
                     result.success(map)
                 }
