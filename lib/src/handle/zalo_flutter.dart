@@ -41,8 +41,8 @@ class ZaloFlutter {
     return null;
   }
 
-  static Future<String> getToken() async {
-    final Map<String, dynamic> rs = await channel.invokeMethod('getToken').setTimeout(_timeout);
+  static Future<String> getToken({String? oauthcode}) async {
+    final Map<String, dynamic> rs = await channel.invokeMethod('getToken', <String, dynamic>{'oauthcode': oauthcode}).setTimeout(_timeout);
     if (rs['sucess'] == true) {
       return rs['token'];
     } else {
