@@ -4,6 +4,8 @@ import ZaloSDK
 import os
 
 public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
+    
+    var codeVer = ""
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "zalo_flutter", binaryMessenger: registrar.messenger())
         let instance = SwiftZaloFlutterPlugin()
@@ -22,6 +24,8 @@ public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         print("Xcode handle: \(call.method)")
+        let arguments = call.arguments as! Dictionary<String, Any>
+        codeVer = arguments["codeVerifier"] as! String
         switch call.method {
         case "getHashKey":
             result(nil)
@@ -55,10 +59,38 @@ public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
         case "shareMessage":
             shareMessage(call, result)
             break
+        case "getToken":
+            getTokenWithOauth(call, result)
+            break;
         default:
             result("Not implement")
             break
         }
+    }
+    
+    func getTokenWithOauth(_ call: FlutterMethodCall,_ result: @escaping FlutterResult){
+        let arguments = call.arguments as! Dictionary<String, Any>
+        let oauthcode = arguments["oauthcode"] as! String
+        ZaloSDK.sharedInstance().getAccessToken(withOAuthCode: oauthcode ,codeVerifier: codeVer) {
+            (tokenResponse) in
+            if let tokenResponse = tokenResponse,
+               tokenResponse.isSucess {
+                let map : [String : Any?] = [
+                    "sucess": true,
+                    "token": tokenResponse
+                ]
+                result(map)
+            } else {
+                let map : [String : Any?] = [
+                    "sucess": false,
+                    "token": ""
+                ]
+                result(map)
+            }
+            
+        }
+        
+       
     }
     
     func logout(_ call: FlutterMethodCall,_ result: @escaping FlutterResult) {
@@ -81,6 +113,7 @@ public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
         let extInfo = arguments["extInfo"] as? [AnyHashable : Any]
         let refreshToken = arguments["refreshToken"] as? String
 
+
         if refreshToken != nil {
             ZaloSDK.sharedInstance().validateRefreshToken(refreshToken, extInfo: extInfo) { (response) in
                 if response?.isSucess == true {
@@ -97,6 +130,7 @@ public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
     func _loginWithoutRefreshToken(_ call: FlutterMethodCall,_ result: @escaping FlutterResult) {
         let arguments = call.arguments as! Dictionary<String, Any>
         let codeVerifier = arguments["codeVerifier"] as! String
+        
         let codeChallenge = arguments["codeChallenge"] as! String
         let extInfo = arguments["extInfo"] as? [AnyHashable : Any]
         let rootViewController = UIApplication.shared.keyWindow?.rootViewController

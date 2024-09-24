@@ -41,6 +41,15 @@ class ZaloFlutter {
     return null;
   }
 
+  static Future<String> getToken() async {
+    final Map<String, dynamic> rs = await channel.invokeMethod('getToken').setTimeout(_timeout);
+    if (rs['sucess'] == true) {
+      return rs['token'];
+    } else {
+      return '';
+    }
+  }
+
   /// * Lấy CodeVerifier cho việc xác thực PCKE
   /// * Get CodeVerifier for PCKE authencation
   /// * More info: https://developers.zalo.me/docs/sdk/ios-sdk/dang-nhap/dang-nhap-post-6006
