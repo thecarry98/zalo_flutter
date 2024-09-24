@@ -24,8 +24,8 @@ public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         print("Xcode handle: \(call.method)")
-        let arguments = call.arguments as! Dictionary<String, Any>
-        codeVer = arguments["codeVerifier"] as! String
+//        let arguments = call.arguments as! Dictionary<String, Any>
+//        codeVer = arguments["codeVerifier"] as! String
         switch call.method {
         case "getHashKey":
             result(nil)
