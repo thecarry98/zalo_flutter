@@ -15,6 +15,8 @@ class ZaloFlutter {
 
   static Duration _timeout = const Duration(seconds: 30);
 
+  static String codeVerifier = ZaloFlutter._getCodeVerifier();
+
   /// Set timeout
   static void setTimeout(Duration timeout) {
     _timeout = timeout;
@@ -42,7 +44,7 @@ class ZaloFlutter {
   }
 
   static Future<String> getToken({String? oauthcode}) async {
-    final Map<String, dynamic>? rs = await channel.invokeMethod<Map<String, dynamic>?>('getToken', <String, dynamic>{'oauthcode': oauthcode}).setTimeout(_timeout);
+    final Map<String, dynamic>? rs = await channel.invokeMethod<Map<String, dynamic>?>('getToken', <String, dynamic>{'oauthcode': oauthcode, 'codeVerifier': codeVerifier}).setTimeout(_timeout);
     if (rs?['sucess'] == true) {
       return rs?['token'];
     } else {
@@ -102,7 +104,6 @@ class ZaloFlutter {
     String? refreshToken,
     Map<String, dynamic> externalInfo = const <String, dynamic>{},
   }) async {
-    final String codeVerifier = ZaloFlutter._getCodeVerifier();
     final String codeChallenge = ZaloFlutter._getCodeChallenge(codeVerifier);
     final Map<dynamic, dynamic>? rs = await channel.invokeMethod<Map<dynamic, dynamic>?>(
       'login',

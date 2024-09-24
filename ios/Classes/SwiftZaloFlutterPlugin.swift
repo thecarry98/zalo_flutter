@@ -5,7 +5,7 @@ import os
 
 public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
     
-    var codeVer = ""
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "zalo_flutter", binaryMessenger: registrar.messenger())
         let instance = SwiftZaloFlutterPlugin()
@@ -71,13 +71,14 @@ public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
     func getTokenWithOauth(_ call: FlutterMethodCall,_ result: @escaping FlutterResult){
         let arguments = call.arguments as! Dictionary<String, Any>
         let oauthcode = arguments["oauthcode"] as! String
+        let codeVer = arguments["codeVerifier"] as! String
         ZaloSDK.sharedInstance().getAccessToken(withOAuthCode: oauthcode ,codeVerifier: codeVer) {
             (tokenResponse) in
             if let tokenResponse = tokenResponse,
                tokenResponse.isSucess {
                 let map : [String : Any?] = [
                     "sucess": true,
-                    "token": tokenResponse
+                    "token": tokenResponse.accessToken
                 ]
                 result(map)
             } else {
@@ -141,7 +142,25 @@ public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
                 let errorMessage = authenResponse.errorMessage
                 let oauthCode = authenResponse.oauthCode
                 if (authenResponse.isSucess == true) {
-                    ZaloSDK.sharedInstance().getAccessToken(withOAuthCode: oauthCode, codeVerifier: codeVerifier, completionHandler: self.withZOTokenResponseObjectCallBack(result: result))
+//                    ZaloSDK.sharedInstance().getAccessToken(withOAuthCode: oauthCode, codeVerifier: codeVerifier, completionHandler: self.withZOTokenResponseObjectCallBack(result: result))
+                    ZaloSDK.sharedInstance().getAccessToken(withOAuthCode: oauthCode ,codeVerifier: codeVerifier) {
+                        (tokenResponse) in
+                        if let tokenResponse = tokenResponse,
+                           tokenResponse.isSucess {
+                            let map : [String : Any?] = [
+                                "sucess": true,
+                                "token": tokenResponse
+                            ]
+                            result(map)
+                        } else {
+                            let map : [String : Any?] = [
+                                "sucess": false,
+                                "token": ""
+                            ]
+                            result(map)
+                        }
+                        
+                    }
                 } else {
                     let error : [String : Any?] = [
                         "errorCode": errorCode,

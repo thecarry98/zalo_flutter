@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _initZaloFlutter();
-    initZalo();
+    // initZalo();
   }
 
   initZalo() async {
@@ -86,19 +86,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 CommonButton(
                   text: 'login',
                   onPressed: () async {
-                    final Map<dynamic, dynamic>? data = await ZaloFlutter.login(
-                      refreshToken: _refreshToken,
-                    );
-                    try {
-                      print("login: $data");
-                      if (data?['isSuccess'] == true) {
-                        _accessToken = data?["data"]["accessToken"] as String?;
-                        _refreshToken = data?["data"]["refreshToken"] as String?;
-                      }
-                    } catch (e) {
-                      print("login: $e");
-                    }
-                    return data;
+                    String oa =
+                        'oomxaHRDEXsy9Kd7IUKz8Q4J9kqrqIqlwXbUsYhx4YF6AWEQNSfrHQy80Q0d-HfWip4Qesp_O5UgVIsWGAWx7jL8MVmGY2Wc-7WwtXoM11p5GtRWEAy28yjv6fjBW4nhrXDcwp7UG2Ei54BrRuPHKCigT9asf1f5kanlX4YG652CJrdBITaF4f4CVEzppnmohnW_dGV0K4E0E1QOQCu5OCWKDTOlxtuxuovHCColKBbWTWG1LC12xfm_SKTuac7qjpi7RIAWOShL3cWAK8TxfS1MU6vQZ3x8MIQrsMze1E1xOm';
+                    final s = await ZaloFlutter.login();
+                    // final data = await ZaloFlutter.getToken(
+                    //   oauthcode: oa,
+                    // );
+
+                    return s;
                   },
                 ),
                 CommonButton(
