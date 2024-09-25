@@ -44,12 +44,14 @@ class ZaloFlutter {
   }
 
   static Future<String> getToken({String? oauthcode}) async {
-    final Map<String, dynamic>? rs = await channel.invokeMethod<Map<String, dynamic>?>('getToken', <String, dynamic>{'oauthcode': oauthcode, 'codeVerifier': codeVerifier}).setTimeout(_timeout);
-    if (rs?['sucess'] == true) {
-      return rs?['token'];
-    } else {
-      return '';
-    }
+    final String? rs = await channel.invokeMethod<String?>('getToken', <String, dynamic>{'oauthcode': oauthcode, 'codeVerifier': codeVerifier});
+    print(rs);
+    // if (rs?['sucess'] == true) {
+    //   return rs?['token'];
+    // } else {
+    //   return '';
+    // }
+    return rs ?? '';
   }
 
   /// * Lấy CodeVerifier cho việc xác thực PCKE
@@ -114,7 +116,7 @@ class ZaloFlutter {
         'refreshToken': refreshToken,
       },
     ).setTimeout(_timeout);
-    return rs;
+    return null;
   }
 
   /// * Lấy thông tin người dùng

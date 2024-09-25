@@ -76,18 +76,21 @@ public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
             (tokenResponse) in
             if let tokenResponse = tokenResponse,
                tokenResponse.isSucess {
+                
                 let map : [String : Any?] = [
                     "sucess": true,
                     "token": tokenResponse.accessToken
                 ]
-                result(map)
+                result(tokenResponse.accessToken)
             } else {
                 let map : [String : Any?] = [
-                    "sucess": false,
-                    "token": ""
+                    "sucess": true,
+                    "token": tokenResponse?.accessToken
                 ]
-                result(map)
+                result("")
+//                result(tokenResponse.accessToken)
             }
+//            result(["token": tokenResponse?.accessToken, "sucess": true])
             
         }
         
@@ -142,25 +145,25 @@ public class SwiftZaloFlutterPlugin: NSObject, FlutterPlugin {
                 let errorMessage = authenResponse.errorMessage
                 let oauthCode = authenResponse.oauthCode
                 if (authenResponse.isSucess == true) {
-//                    ZaloSDK.sharedInstance().getAccessToken(withOAuthCode: oauthCode, codeVerifier: codeVerifier, completionHandler: self.withZOTokenResponseObjectCallBack(result: result))
-                    ZaloSDK.sharedInstance().getAccessToken(withOAuthCode: oauthCode ,codeVerifier: codeVerifier) {
-                        (tokenResponse) in
-                        if let tokenResponse = tokenResponse,
-                           tokenResponse.isSucess {
-                            let map : [String : Any?] = [
-                                "sucess": true,
-                                "token": tokenResponse
-                            ]
-                            result(map)
-                        } else {
-                            let map : [String : Any?] = [
-                                "sucess": false,
-                                "token": ""
-                            ]
-                            result(map)
-                        }
-                        
-                    }
+                    ZaloSDK.sharedInstance().getAccessToken(withOAuthCode: oauthCode, codeVerifier: codeVerifier, completionHandler: self.withZOTokenResponseObjectCallBack(result: result))
+//                    ZaloSDK.sharedInstance().getAccessToken(withOAuthCode: oauthCode ,codeVerifier: codeVerifier) {
+//                        (tokenResponse) in
+//                        if let tokenResponse = tokenResponse,
+//                           tokenResponse.isSucess {
+//                            let map : [String : Any?] = [
+//                                "sucess": true,
+//                                "token": tokenResponse
+//                            ]
+//                            result(map)
+//                        } else {
+//                            let map : [String : Any?] = [
+//                                "sucess": false,
+//                                "token": ""
+//                            ]
+//                            result(map)
+//                        }
+//                        
+//                    }
                 } else {
                     let error : [String : Any?] = [
                         "errorCode": errorCode,
